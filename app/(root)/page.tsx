@@ -1,7 +1,9 @@
 import Image from "next/image";
 import SearchForm from "@/components/SearchForm";
 import {SearchParams} from "next/dist/server/request/search-params";
-import StartupCard from "@/components/StartupCard";
+import StartupCard, {StartupCardType} from "@/components/StartupCard";
+import {client} from "@/sanity/lib/client";
+import {STARTUP_QUERY} from "@/sanity/lib/queries";
 
 export default async function Home({searchParams}: {searchParams: Promise<{query?: string}>}){
 
@@ -9,16 +11,18 @@ export default async function Home({searchParams}: {searchParams: Promise<{query
 
     const query = (await searchParams).query;
 
-    const posts = [{
-        _createdAt: new Date(),
-        views: 55,
-        author: {_id: 1, name: "Amaan Ahmad"},
-        _id: 1,
-        description: 'This is a description',
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNu5Y7TGPb_e2NEy4KhUaWwQxF3RRtxb80YQ&s",
-        category: "Artificial Intelligence",
-        title: "AI"
-    }]
+    const posts = await client.fetch(STARTUP_QUERY)
+
+    // const posts = [{
+    //     _createdAt: new Date(),
+    //     views: 55,
+    //     author: {_id: 1, name: "Amaan Ahmad"},
+    //     _id: 1,
+    //     description: 'This is a description',
+    //     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNu5Y7TGPb_e2NEy4KhUaWwQxF3RRtxb80YQ&s",
+    //     category: "Artificial Intelligence",
+    //     title: "AI"
+    // }]
   return (
       <>
           <section className="pink_container pattern">
