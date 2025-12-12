@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
+    cacheComponents: true,
     images: {
         dangerouslyAllowSVG: true,
         remotePatterns: [
@@ -10,7 +10,8 @@ const nextConfig: NextConfig = {
                 hostname: '*'
             }
         ]
-    }
+    },
+
   /* config options here */
 };
 
