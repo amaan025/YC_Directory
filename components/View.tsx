@@ -1,11 +1,30 @@
+// components/View.tsx
 import Ping from "@/components/Ping";
 import { client } from "@/sanity/lib/client";
 import { STARTUP_VIEWS_QUERY } from "@/sanity/lib/queries";
-import ViewCounter from "@/components/ViewCounter";
+import { writeClient } from "@/sanity/lib/write-client";
+import { after } from "next/server";
 
-export default async function View({ id }: { id: string }) {
-    const data = await client.withConfig({ useCdn: false }).fetch(STARTUP_VIEWS_QUERY, { id });
-    const initialViews = data?.views ?? 0;
+export default async function View({
+                                       params,
+                                   }: {
+    params: Promise<{ id: string }>;
+}) {
+    const { id } = await params;
+
+    const data = await client
+        .withConfig({ useCdn: false })
+        .fetch(STARTUP_VIEWS_QUERY, { id });
+
+    const totalViews = data?.views ?? 0;
+
+    after(async () => {
+        await writeClient
+            .patch(id)
+            .setIfMissing({ views: 0 })
+            .set({ views: totalViews + 1 })
+            .commit();
+    });
 
     return (
         <div className="view-container">
@@ -14,7 +33,7 @@ export default async function View({ id }: { id: string }) {
             </div>
 
             <p className="view-text">
-                <ViewCounter id={id} initialViews={initialViews} />
+                <span className="font-black">Views: {totalViews}</span>
             </p>
         </div>
     );

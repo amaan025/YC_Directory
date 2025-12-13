@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import HomeInner from "./HomeInner";
+import UserPageInner from "./UserPageInner";
 
 export default function Page(props: any) {
     return (
         <Suspense fallback={null}>
-            <HomeInner {...props} />
+            <UserPageInner {...props} />
         </Suspense>
     );
 }
